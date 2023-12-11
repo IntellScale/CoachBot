@@ -26,3 +26,4 @@ def get_chat_id(username_to_find):
             print(f"Username '{username_to_find}' not found in the updates.")
     else:
         print(f"Error: {data['description']}")
+get_chat_id("Alexander_Galich")

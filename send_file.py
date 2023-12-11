@@ -26,6 +26,4 @@ def send_report(file: str, chat_id: int):
     # Check the response
     print(r.json())
 
-report = get_report_record("n.andrievskiy@gmail.com", "2023-12-10")
-print(report)
-send_report(report)
+
