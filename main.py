@@ -37,7 +37,7 @@ def get_user_report(user_name: str,email: str, date : str):
     chat_id = get_chat_id(user_name)
    
     send_report(report_file_path,chat_id)
-    #delete_document(report_file_path)
+    delete_document(report_file_path)
 
 
 

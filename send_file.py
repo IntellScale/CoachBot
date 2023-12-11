@@ -3,7 +3,7 @@ import os
 
 from query_support import get_report_record
 
-def send_report(file: str, chat_id: int):
+def send_report(file_path: str, chat_id: int):
     # Replace 'YOUR_TOKEN' with your actual bot token
     bot_token = '6859309312:AAFo5rGYbvh8cgW4cnH8OW2JNqNckmgqWy8'
 
@@ -19,9 +19,9 @@ def send_report(file: str, chat_id: int):
     }
 
     # Open the file and send it as part of the request
-   
-    files = {'document': file}
-    r = requests.post(url, params=params, files=files)
+    with open(file_path, 'rb') as file:
+        files = {'document': file}
+        r = requests.post(url, params=params, files=files)
 
     # Check the response
     print(r.json())
