@@ -22,6 +22,7 @@ def query_user_reporst(email: str , date:str) -> bool:
 
 @app.get("/reports-get/{user_name}/{email}/{date}")
 def get_user_report(user_name: str,email: str, date : str):
+    report_file_path = "output_documenet.docx"
 
     # Extract information from google sheets
     google_sheets_data = get_report_record(email, date)
@@ -29,15 +30,14 @@ def get_user_report(user_name: str,email: str, date : str):
     report = create_report_file(google_sheets_data)
 
 
-    report_file_path = "output_documenet.docx"
-    create_word_document(report, output_file_name=report_file_path)
+   
+    create_word_document(report, report_file_path)
 
     # Extract chat id
-
     chat_id = get_chat_id(user_name)
-    print(chat_id)
+   
     send_report(report_file_path,chat_id)
-    delete_document(report_file_path)
+    #delete_document(report_file_path)
 
 
 
