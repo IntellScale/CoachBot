@@ -21,9 +21,8 @@ def get_chat_id(username_to_find):
                     chat_id = update['message']['chat']['id']
                     print(f"Chat ID for username '{username_to_find}': {chat_id}")
                     return chat_id
-                    break
+                  
         else:
             print(f"Username '{username_to_find}' not found in the updates.")
     else:
         print(f"Error: {data['description']}")
-print(get_chat_id("Alexander_Galich"))
