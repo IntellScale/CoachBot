@@ -20,7 +20,7 @@ def in_same_week(date1, date2):
 def validate_presence(user_email, validation_date):
     sheet = main()
 
-    data = read_data(sheet= sheet)
+    data = read_data(sheet=sheet)
     
 
     data_df = pd.DataFrame(data)
@@ -41,12 +41,9 @@ def validate_presence(user_email, validation_date):
 def get_report_record(user_email, query_date):
     sheet = main()
 
-    data = read_data(sheet= sheet)
-    
-
+    data = read_data(sheet=sheet)
     data_df = pd.DataFrame(data)
     
-
     data_df.columns = data_df.iloc[0]
     data_df = data_df[1:]   
     
@@ -62,11 +59,11 @@ def get_report_record(user_email, query_date):
             if date_validation == True:
                 return i 
 
-                
-     
+
      
    
-print(get_report_record('n.andrievskiy@gmail.com', "2023-12-10"))
+#print(get_report_record('n.andrievskiy@gmail.com', "2023-12-10"))
+    
     
 
 
@@ -76,4 +73,3 @@ print(get_report_record('n.andrievskiy@gmail.com', "2023-12-10"))
     
 
 
-    

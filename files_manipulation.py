@@ -1,9 +1,9 @@
 from docx import Document
 import os
 
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas
-import aspose.pdf as ap
+# from reportlab.lib.pagesizes import letter
+# from reportlab.pdfgen import canvas
+# import aspose.pdf as ap
 
 
 
