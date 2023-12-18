@@ -1,7 +1,9 @@
 import pandas as pd 
 from Google_connect import main, read_data
+from time_category import is_in_last_two_weeks,is_in_last_month, is_in_last_quarter, is_in_last_year
 import time
 from datetime import datetime, timedelta
+
 
 def in_same_week(date1, date2):
     # Convert input strings to datetime objects
@@ -63,11 +65,47 @@ def get_report_record(user_email, query_date):
                 return i 
 
                 
-     
-     
-   
-print(get_report_record('n.andrievskiy@gmail.com', "2023-12-10"))
+def get_user_submittions_data(user_email) :
+    sheet = main()
+
+    data = read_data(sheet= sheet)
     
+
+    data_df = pd.DataFrame(data)
+    
+
+    data_df.columns = data_df.iloc[0]
+    data_df = data_df[1:]   
+    
+
+    users_submitions = data_df[data_df['Email Address'] == user_email]
+
+    return users_submitions
+
+def filter_submittions_time_category(row , time_frame_category):
+     # Possible types
+     ## last_two_weeks
+        #last_month
+        ##last_quarter
+        #last_year'''
+    # Extract the date 
+    date = datetime.strptime(row[0].split(" ")[0], "%m/%d/%Y")
+
+
+    if time_frame_category == "last_two_weeks":
+        return is_in_last_two_weeks(date)
+    
+    if time_frame_category == "last_month":
+        return is_in_last_month(date)
+    
+    if time_frame_category == "last_quarter": 
+        return is_in_last_quarter(date)
+    
+    if time_frame_category == "last_year":
+        return is_in_last_year(date)
+         
+     
+        
 
 
 
