@@ -135,3 +135,12 @@ def create_report_file(excel_data):
 
     
     return template
+
+def create_stat_message(statistics: dict) -> str:
+    message = ""
+    for key, value in statistics.items():
+        message += f"{key}:\n"
+        for stat_type, stat_value in value.items():
+            message += f"{stat_type}: {stat_value}\n"
+        message += "\n"
+    return message

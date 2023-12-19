@@ -40,17 +40,17 @@ def calculate_stats(user_email, time_period, stat_field):
                 numeric_values = pd.to_numeric(time_filtered_data[field])
                     
                 result_dict[field] = {
-                    'avg': float(numeric_values.mean()),
                     'min': float(numeric_values.min()),
-                    'max': float(numeric_values.max())
+                    'max': float(numeric_values.max()),
+                    'avg': float(numeric_values.mean())
                 }
 
             except ValueError as e:
                 print(e)
                 result_dict[field] = {
-                    'avg': None,
                     'min': None,
-                    'max': None
+                    'max': None,
+                    'avg': None
                 }
 
 
@@ -61,39 +61,79 @@ def calculate_stats(user_email, time_period, stat_field):
                 numeric_values = pd.to_numeric(time_filtered_data[field])
                     
                 result_dict[field] = {
-                    'avg': float(numeric_values.mean()),
                     'min': float(numeric_values.min()),
-                    'max': float(numeric_values.max())
+                    'max': float(numeric_values.max()),
+                    'avg': float(numeric_values.mean())
                 }
 
             except ValueError as e:
                 print(e)
                 result_dict[field] = {
-                    'avg': None,
                     'min': None,
-                    'max': None
+                    'max': None,
+                    'avg': None
                 }
+
+    elif stat_field == "all":
+            # Include all stat fields (food, measurements, positive_state, field_4, field_5)
+            all_fields = ["food", "measurements", "Щирість позитивного стану", "Відчуття дзеркала світу", "Робота з душею"]
+            for field in all_fields:
+                if field == "food" or field == "measurements":
+                    # Include individual features for 'food' and 'measurements'
+                    sub_fields = ["Білків", "Жиров", "Вуглеводів", "ККАЛ"] if field == "food" else ["Вага", "Плечі", "Груди", "Рука права", "Рука ліва", "Талія", "Стегна", "Стегно праве", "Стегно ліве"]
+                    for sub_field in sub_fields:
+                        try:
+                            numeric_values = pd.to_numeric(time_filtered_data[sub_field])
+                            result_dict[sub_field] = {
+                                'min': float(numeric_values.min()),
+                                'max': float(numeric_values.max()),
+                                'avg': float(numeric_values.mean())
+                            }
+                        except ValueError as e:
+                            result_dict[sub_field] = {
+                                'min': None,
+                                'max': None,
+                                'avg': None
+                            }
+                else:
+                    # Include single columns for other stat fields
+                    try:
+                        numeric_values = pd.to_numeric(time_filtered_data[field])
+                        result_dict[field] = {
+                            'min': float(numeric_values.min()),
+                            'max': float(numeric_values.max()),
+                            'avg': float(numeric_values.mean())
+                        }
+                    except ValueError as e:
+                        result_dict[field] = {
+                            'min': None,
+                            'max': None,
+                            'avg': None
+                        }
+
 
     else:
         try:
             numeric_values = pd.to_numeric(time_filtered_data[stat_field])
                 
             result_dict[stat_field] = {
-                'avg': float(numeric_values.mean()),
                 'min': float(numeric_values.min()),
-                'max': float(numeric_values.max())
+                'max': float(numeric_values.max()),
+                'avg': float(numeric_values.mean())
             }
 
         except ValueError as e:
             print(e)
             result_dict[stat_field] = {
-                'avg': None,
                 'min': None,
-                'max': None
+                'max': None,
+                'avg': None
             }
 
     return result_dict
 
 
-# stats = calculate_stats("n.andrievskiy@gmail.com", "last_month", "food")
-# print(stats)
+stats = calculate_stats("n.andrievskiy@gmail.com", "last_month", "all")
+from create_messages import create_stat_message
+message = create_stat_message(stats)
+print(message)

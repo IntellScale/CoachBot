@@ -5,11 +5,7 @@ import os
 # from reportlab.pdfgen import canvas
 # import aspose.pdf as ap
 
-
-
 def create_word_document(content, output_file_name):
-
-
     # Save to Word document
     doc = Document()
     paragraph = doc.add_paragraph()

@@ -3,8 +3,6 @@ import requests
 def get_chat_id(username_to_find):
     bot_token = '6859309312:AAFo5rGYbvh8cgW4cnH8OW2JNqNckmgqWy8'
 
-    
-
     # Use the getUpdates endpoint to get the latest updates
     url = f"https://api.telegram.org/bot{bot_token}/getUpdates"
     response = requests.get(url)
@@ -26,4 +24,3 @@ def get_chat_id(username_to_find):
             print(f"Username '{username_to_find}' not found in the updates.")
     else:
         print(f"Error: {data['description']}")
-get_chat_id("Alexander_Galich")

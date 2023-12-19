@@ -43,23 +43,49 @@ def main():
         print(e)
 
 
-def read_data(sheet):
+def read_data(sheet, sheet_name="Form Responses 1"):
     
-    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range="Form Responses 1!A1:BT100").execute()
+    result = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=f"{sheet_name}!A1:BT100").execute()
     values = result.get("values", [])
 
-    
-    #for row in values:
-        #print(row)
     return values
 
-def write_data(sheet):
-        num_rows = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range="Sheet1!A1:A").execute()
-        num_rows = len(num_rows.get("values", []))
-        
-        sheet.values().update(spreadsheetId=SPREADSHEET_ID, range=f"Sheet1!A{num_rows+1}", valueInputOption="USER_ENTERED", body={"values": [["Some name"]]}).execute()
-        sheet.values().update(spreadsheetId=SPREADSHEET_ID, range=f"Sheet1!B{num_rows+1}", valueInputOption="USER_ENTERED", body={"values": [["Some phone number"]]}).execute()
-        sheet.values().update(spreadsheetId=SPREADSHEET_ID, range=f"Sheet1!C{num_rows+1}", valueInputOption="USER_ENTERED", body={"values": [["Some phone value"]]}).execute()
+def write_data(sheet, sheet_name, data):
+    # Get existing data to check for duplicates
+    existing_data = sheet.values().get(spreadsheetId=SPREADSHEET_ID, range=f"{sheet_name}!A:C").execute()
+    existing_rows = existing_data.get("values", [])
+
+    # Create a set of existing primary keys for fast lookup
+    existing_primary_keys = set(existing_row[0] for existing_row in existing_rows)
+
+    # Prepare new data to be added
+    new_rows = []
+    for row in data:
+        primary_key = row[0]
+
+        # Check if the primary key already exists
+        if primary_key not in existing_primary_keys:
+            new_rows.append(row)
+            existing_primary_keys.add(primary_key)
+
+    if new_rows:
+        # Get the number of columns based on the first row of data
+        num_columns = len(new_rows[0])
+
+        # Get the next available row
+        num_rows = len(existing_rows) + 1
+
+        # Update values for each column
+        for col_index in range(num_columns):
+            col_values = [row[col_index] if col_index < len(row) else "" for row in new_rows]
+            range_str = f"{sheet_name}!{chr(65 + col_index)}{num_rows}"
+            sheet.values().update(
+                spreadsheetId=SPREADSHEET_ID,
+                range=range_str,
+                valueInputOption="USER_ENTERED",
+                body={"values": [col_values]},
+            ).execute()
+
 #if __name__ == "__main__":
   #  main()
 
