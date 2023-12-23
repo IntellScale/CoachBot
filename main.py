@@ -4,10 +4,9 @@ from fastapi import FastAPI, HTTPException
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 
+import logging
 
 from query_support import *
-
-
 from create_messages import create_report_file, create_stat_message
 from user_id_extractor import get_chat_id
 from telegram_direct import TelegramMessanger
@@ -29,8 +28,9 @@ def add_user(email: str, full_name: str, user_name: str):
         add_user_to_sheet(email, full_name, user_name)
 
         return {"user-add successful": True}
+    
     except Exception as e:
-        print(e) 
+        logging.exception("An error occurred:") 
         return {"user-add successful": False}
 
 @app.get("/reports-check/{email}")
@@ -47,7 +47,7 @@ def get_user_report(user_name: str,email: str, date : str):
         # Extract information from google sheets
         google_sheets_data = get_report_record(email, date)
 
-        if google_sheets_data is False:
+        if google_sheets_data is None or google_sheets_data is False:
             raise HTTPException(status_code=404, detail="Date Not Found")
 
         # Create report message
@@ -66,9 +66,13 @@ def get_user_report(user_name: str,email: str, date : str):
         delete_document(report_file_path)
 
         return {"reports-get successful": True}
+
+    except HTTPException as http_exception:
+        logging.error(f"HTTP Exception: {http_exception}")
+        raise http_exception  # Re-raise the HTTP exception
     except Exception as e:
-        print(e) 
-        return {"eports-get successful": False}
+        logging.exception("An error occurred:")
+        raise HTTPException(status_code=500, detail="Internal Server Error")
 
 @app.get("/stats-get/{user_name}/{email}/{time_period}/{stat_type}")
 def get_user_stats(user_name: str, email: str, time_period: str, stat_type: str):
@@ -91,8 +95,9 @@ def get_user_stats(user_name: str, email: str, time_period: str, stat_type: str)
 
     
         return {"stats-get successful": True}
+    
     except Exception as e:
-        print(e) 
+        logging.exception("An error occurred:") 
         return {"stats-get successful": False}
 
 # A get request to return a list of all unique athlete names for the coach
@@ -117,7 +122,8 @@ def add_review(feedback: Feedback):
 
 
         return {"feedback-add successful": True}
+    
     except Exception as e:
-        print(e) 
+        logging.exception("An error occurred:") 
         return {"feedback-add successful": False}
     
