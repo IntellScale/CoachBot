@@ -69,7 +69,6 @@ def get_report_record(user_email, query_date):
 
     users_submitions = data_df[data_df['Email Address'] == user_email]
     for i in users_submitions.values:
-            
             record_date = i[0]
            
             submition_date = record_date.split(' ')[0]
@@ -77,9 +76,8 @@ def get_report_record(user_email, query_date):
             date_validation = in_same_week(query_date, submition_date)
             if date_validation == True:
                 return i 
-            else:
-                return False
-
+    return False
+        
 def get_all_athletes():
     sheet = main()
 
