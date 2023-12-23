@@ -17,8 +17,13 @@ def convert_date(date_str):
         today_date = datetime.now().strftime("%Y-%m-%d")
         return today_date
     else:
-        # Handle other cases or return the input string as is
-        return date_str    
+        try:
+            # Try to parse as dd.mm.yyyy
+            input_date = datetime.strptime(date_str, "%d.%m.%Y").strftime("%Y-%m-%d")
+            return input_date
+        except ValueError:
+            # If parsing fails, return the original input
+            return date_str   
 
 def in_same_week(date1, date2):
     # Convert input strings to datetime objects
@@ -52,7 +57,7 @@ def validate_presence(user_email, validation_date):
 
 def get_report_record(user_email, query_date):
     query_date = convert_date(query_date)
-    
+
     sheet = main()
 
     data = read_data(sheet=sheet)
