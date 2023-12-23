@@ -29,7 +29,8 @@ def add_user(email: str, full_name: str, user_name: str):
         add_user_to_sheet(email, full_name, user_name)
 
         return {"user-add successful": True}
-    except:
+    except Exception as e:
+        print(e) 
         return {"user-add successful": False}
 
 @app.get("/reports-check/{email}")
@@ -64,9 +65,10 @@ def get_user_report(user_name: str,email: str, date : str):
         # Delete report
         delete_document(report_file_path)
 
-        return {"successful": True}
-    except: 
-        return {"successful": False}
+        return {"reports-get successful": True}
+    except Exception as e:
+        print(e) 
+        return {"eports-get successful": False}
 
 @app.get("/stats-get/{user_name}/{email}/{time_period}/{stat_type}")
 def get_user_stats(user_name: str, email: str, time_period: str, stat_type: str):
@@ -88,9 +90,10 @@ def get_user_stats(user_name: str, email: str, time_period: str, stat_type: str)
         delete_document(stats_file_path)
 
     
-        return {"successful": True}
-    except: 
-        return {"successful": False}
+        return {"stats-get successful": True}
+    except Exception as e:
+        print(e) 
+        return {"stats-get successful": False}
 
 # A get request to return a list of all unique athlete names for the coach
 @app.get("/athletes")
@@ -114,20 +117,7 @@ def add_review(feedback: Feedback):
 
 
         return {"feedback-add successful": True}
-    except:
+    except Exception as e:
+        print(e) 
         return {"feedback-add successful": False}
     
-
-
-
-             
-             
-
-
-
-
-
-
-
-    
-
