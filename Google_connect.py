@@ -86,6 +86,4 @@ def write_data(sheet, sheet_name, data):
                 body={"values": [col_values]},
             ).execute()
 
-#if __name__ == "__main__":
-  #  main()
 
