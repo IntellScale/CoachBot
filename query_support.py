@@ -12,6 +12,14 @@ def add_user_to_sheet(email, full_name, user_name):
 
     write_data(sheet, "Athlete Names", data)
 
+def convert_date(date_str):
+    if date_str.lower() == "today":
+        today_date = datetime.now().strftime("%Y-%m-%d")
+        return today_date
+    else:
+        # Handle other cases or return the input string as is
+        return date_str    
+
 def in_same_week(date1, date2):
     # Convert input strings to datetime objects
     date1 = datetime.strptime(date1, "%Y-%m-%d")
@@ -43,6 +51,8 @@ def validate_presence(user_email, validation_date):
     return False
 
 def get_report_record(user_email, query_date):
+    query_date = convert_date(query_date)
+    
     sheet = main()
 
     data = read_data(sheet=sheet)
