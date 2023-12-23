@@ -1,8 +1,12 @@
-uvicorn
+fastapi
+pandas
+matplotlib
 google-auth
 google-auth-oauthlib
 google-auth-httplib2
 google-api-python-client
-pandas
-fastapi
+requests
+pydantic
 python-docx
+pytz
+schedule
