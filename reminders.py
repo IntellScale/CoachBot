@@ -59,6 +59,7 @@ def send_first_of_month_reminders():
             send_message(chat_id, "Sending first day of the month reminders...")
 
 if __name__ == '__main__':
+    print("REMINDERS -- WORKING")
     # # Schedule Monday reminders every Monday at 10 AM Kyiv time
     # schedule.every().monday.at("10:00").do(send_monday_reminders)
 
