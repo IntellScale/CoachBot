@@ -1,4 +1,5 @@
-
+from io import BytesIO
+import base64
 
 def create_report_file(excel_data):
 
@@ -138,9 +139,38 @@ def create_report_file(excel_data):
 
 def create_stat_message(statistics: dict) -> str:
     message = ""
+
     for key, value in statistics.items():
         message += f"{key}:\n"
         for stat_type, stat_value in value.items():
-            message += f"{stat_type}: {stat_value}\n"
+            if isinstance(stat_value, dict):
+                message += f"  - {stat_type}:\n"
+                message += f"    - Min: {stat_value.get('min', 'N/A')}\n"
+                message += f"    - Max: {stat_value.get('max', 'N/A')}\n"
+                message += f"    - Avg: {stat_value.get('avg', 'N/A')}\n"
+                # Check if 'plot_path' key exists in the dictionary
+                if 'plot_path' in stat_value:
+                    # Embed the plot as a base64-encoded image in the HTML message
+                    plot_path = stat_value['plot_path']
+                    plot_image = generate_base64_plot(plot_path)
+                    message += f"    - Plot: {plot_image}\n"
+            else:
+                # Handle cases where stat_value is not a dictionary
+                message += f"  - {stat_type}: {stat_value}\n"
+
         message += "\n"
+
     return message
+
+def generate_base64_plot(plot_path):
+    # Read the plot image
+    with open(plot_path, "rb") as plot_file:
+        plot_data = plot_file.read()
+
+    # Encode the image data as base64
+    base64_plot = base64.b64encode(plot_data).decode("utf-8")
+
+    # Create an HTML image tag with the base64-encoded image
+    plot_image = f"<img src='data:image/png;base64,{base64_plot}'/>"
+
+    return plot_image

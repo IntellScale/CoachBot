@@ -23,9 +23,6 @@ class TelegramMessanger:
             files = {'document': file}
             r = requests.post(url, params=params, files=files)
 
-        # Check the response
-        print(r.json())
-
 
     def send_message(self, message, chat_id: int):
         # Use the sendDocument endpoint to send a file

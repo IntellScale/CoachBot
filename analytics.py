@@ -1,9 +1,12 @@
-import pandas as pd 
-from Google_connect import main, read_data
-import time
+import pandas as pd
+import matplotlib.pyplot as plt
+import matplotlib.dates as mdates
+import os
 from datetime import datetime, timedelta
 
-def calculate_stats(user_email, time_period, stat_field):
+from Google_connect import main, read_data
+
+def calculate_stats(user_email, time_period, stat_field, plots_folder="plots"):
     sheet = main()
 
     data = read_data(sheet=sheet)
@@ -30,7 +33,7 @@ def calculate_stats(user_email, time_period, stat_field):
 
     # Filter data by the selected time_period
     time_filtered_data = user_data[user_data['Timestamp'] >= start_date]
-# Calculate statistics
+    # Calculate statistics
     result_dict = {}
 
     if stat_field == "food":
@@ -38,11 +41,16 @@ def calculate_stats(user_email, time_period, stat_field):
         for field in fields:
             try:
                 numeric_values = pd.to_numeric(time_filtered_data[field])
+                # Generate plot for the singular field
+                plot_file_path = os.path.join(plots_folder, f'{field.replace(" ", "-")}_plot.png')
+                generate_plot(time_filtered_data['Timestamp'], numeric_values, field, plot_file_path, time_period)
+
                     
                 result_dict[field] = {
                     'min': float(numeric_values.min()),
                     'max': float(numeric_values.max()),
-                    'avg': float(numeric_values.mean())
+                    'avg': float(numeric_values.mean()),
+                    "plot_path": plot_file_path
                 }
 
             except ValueError as e:
@@ -50,7 +58,8 @@ def calculate_stats(user_email, time_period, stat_field):
                 result_dict[field] = {
                     'min': None,
                     'max': None,
-                    'avg': None
+                    'avg': None,
+                    "plot_path": None
                 }
 
 
@@ -59,11 +68,15 @@ def calculate_stats(user_email, time_period, stat_field):
         for field in fields:
             try:
                 numeric_values = pd.to_numeric(time_filtered_data[field])
+                # Generate plot for the singular field
+                plot_file_path = os.path.join(plots_folder, f'{field.replace(" ", "-")}_plot.png')
+                generate_plot(time_filtered_data['Timestamp'], numeric_values, field, plot_file_path, time_period)
                     
                 result_dict[field] = {
                     'min': float(numeric_values.min()),
                     'max': float(numeric_values.max()),
-                    'avg': float(numeric_values.mean())
+                    'avg': float(numeric_values.mean()),
+                    'plot_path': plot_file_path
                 }
 
             except ValueError as e:
@@ -71,7 +84,8 @@ def calculate_stats(user_email, time_period, stat_field):
                 result_dict[field] = {
                     'min': None,
                     'max': None,
-                    'avg': None
+                    'avg': None,
+                    'plot_path': None
                 }
 
     elif stat_field == "all":
@@ -84,42 +98,58 @@ def calculate_stats(user_email, time_period, stat_field):
                     for sub_field in sub_fields:
                         try:
                             numeric_values = pd.to_numeric(time_filtered_data[sub_field])
+                            # Generate plot for the singular field
+                            plot_file_path = os.path.join(plots_folder, f'{sub_field.replace(" ", "-")}_plot.png')
+                            generate_plot(time_filtered_data['Timestamp'], numeric_values, sub_field, plot_file_path, time_period)
+
                             result_dict[sub_field] = {
                                 'min': float(numeric_values.min()),
                                 'max': float(numeric_values.max()),
-                                'avg': float(numeric_values.mean())
+                                'avg': float(numeric_values.mean()),
+                                'plot_path': plot_file_path
                             }
                         except ValueError as e:
                             result_dict[sub_field] = {
                                 'min': None,
                                 'max': None,
-                                'avg': None
+                                'avg': None,
+                                'plot_path': None
                             }
                 else:
                     # Include single columns for other stat fields
                     try:
                         numeric_values = pd.to_numeric(time_filtered_data[field])
+                        # Generate plot for the singular field
+                        plot_file_path = os.path.join(plots_folder, f'{field.replace(" ", "-")}_plot.png')
+                        generate_plot(time_filtered_data['Timestamp'], numeric_values, field, plot_file_path, time_period)
+                    
                         result_dict[field] = {
                             'min': float(numeric_values.min()),
                             'max': float(numeric_values.max()),
-                            'avg': float(numeric_values.mean())
+                            'avg': float(numeric_values.mean()),
+                            'plot_path': plot_file_path
                         }
                     except ValueError as e:
                         result_dict[field] = {
                             'min': None,
                             'max': None,
-                            'avg': None
+                            'avg': None,
+                            'plot_path': None
                         }
 
 
     else:
         try:
             numeric_values = pd.to_numeric(time_filtered_data[stat_field])
-                
+            # Generate plot for the singular field
+            plot_file_path = os.path.join(plots_folder, f'{stat_field.replace(" ", "-")}_plot.png')
+            generate_plot(time_filtered_data['Timestamp'], numeric_values, stat_field, plot_file_path, time_period)
+            
             result_dict[stat_field] = {
                 'min': float(numeric_values.min()),
                 'max': float(numeric_values.max()),
-                'avg': float(numeric_values.mean())
+                'avg': float(numeric_values.mean()),
+                "plot_path": plot_file_path
             }
 
         except ValueError as e:
@@ -132,8 +162,33 @@ def calculate_stats(user_email, time_period, stat_field):
 
     return result_dict
 
+def generate_plot(timestamps, numeric_values, stat_field, plot_file_path, period_type):
+    # Convert timestamps to datetime objects
+    datetime_timestamps = [pd.to_datetime(ts).to_pydatetime() for ts in timestamps]
 
-stats = calculate_stats("n.andrievskiy@gmail.com", "last_month", "all")
-from create_messages import create_stat_message
-message = create_stat_message(stats)
-print(message)
+    # Create the plot using Matplotlib
+    plt.plot(datetime_timestamps, numeric_values, label=stat_field)
+
+    # Customize the x-axis based on the period type
+    if period_type == 'last_2_weeks':
+        plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+    elif period_type == 'last_month':
+        plt.gca().xaxis.set_major_locator(mdates.WeekdayLocator(interval=1))
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+    elif period_type == 'last_quarter':
+        plt.gca().xaxis.set_major_locator(mdates.MonthLocator(bymonthday=-1))
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b %d'))
+    elif period_type == 'last_year':
+        plt.gca().xaxis.set_major_locator(mdates.MonthLocator())
+        plt.gca().xaxis.set_major_formatter(mdates.DateFormatter('%b'))
+
+    plt.xlabel('Time')
+    plt.ylabel(stat_field)
+    plt.title(f'{stat_field} Progression Over Time')
+    plt.legend()
+
+    # Save the plot to the specified file path
+    plt.savefig(plot_file_path)
+    plt.close()
+

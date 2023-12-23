@@ -11,7 +11,7 @@ from query_support import *
 from create_messages import create_report_file, create_stat_message
 from user_id_extractor import get_chat_id
 from telegram_direct import TelegramMessanger
-from file_writer import create_word_document, delete_document
+from file_writer import create_word_document, create_word_stats_document, delete_document
 from analytics import calculate_stats
 from feedback import Feedback
 
@@ -71,13 +71,12 @@ def get_user_report(user_name: str,email: str, date : str):
 @app.get("/stats-get/{user_name}/{email}/{time_period}/{stat_type}")
 def get_user_stats(user_name: str, email: str, time_period: str, stat_type: str):
     try:     
-        
+            
         stats_file_path = f"{time_period}-stats.docx"
 
         # Get statistics, create a formatted message, create a docx file, send it
         stats = calculate_stats(email, time_period, stat_type)
-        stat_message = create_stat_message(stats)
-        create_word_document(stat_message, stats_file_path)
+        create_word_stats_document(stats, stats_file_path)
 
         # Extract chat id
         chat_id = get_chat_id(user_name)

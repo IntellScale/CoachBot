@@ -4,7 +4,6 @@ from datetime import datetime, timedelta
 from Google_connect import main, read_data, write_data
 from user_id_extractor import get_chat_id
 
-
 def add_user_to_sheet(email, full_name, user_name):
     chat_id = get_chat_id(user_name)
 
@@ -43,9 +42,6 @@ def validate_presence(user_email, validation_date):
     
     return False
 
-today = datetime.today().strftime('%Y-%m-%d')
-print(validate_presence("n.andrievskiy@gmail.com", today))
-
 def get_report_record(user_email, query_date):
     sheet = main()
 
@@ -68,7 +64,6 @@ def get_report_record(user_email, query_date):
                 return i 
             else:
                 return False
-
 
 def get_all_athletes():
     sheet = main()

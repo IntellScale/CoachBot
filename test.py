@@ -2,16 +2,11 @@ from docx import Document
 import os
 from docx import Document
 from docx.shared import Inches, Pt
+import base64
+from telegram_direct import TelegramMessanger
+from analytics import calculate_stats
 
-def create_word_document(content, output_file_name):
-    # Save to Word document
-    doc = Document()
-    paragraph = doc.add_paragraph()
-    paragraph.add_run(content)
-    doc.save(output_file_name)
-    print('Word document saved successfully.')
-
-def create_word_stats_document(stats_dict, output_path='output_document.docx'):
+def create_word_stat_document(stats_dict, output_path='output_document.docx'):
     # Create a new Word document
     doc = Document()
 
@@ -53,19 +48,13 @@ def create_word_stats_document(stats_dict, output_path='output_document.docx'):
 
                 # Add the plot image to the document
                 doc.add_picture(plot_path, width=Inches(6.0))
-
-                # Remove the image
-                delete_document(plot_path)
             else:
                 doc.add_paragraph(f"Invalid plot_path: {plot_path}")
 
     # Save the document
     doc.save(output_path)
 
-
-def delete_document(file_path = 'output_report.docx'):
-    try:
-        os.remove(file_path)
-        print(f'File {file_path} deleted successfully.')
-    except OSError as e:
-        print(f"Error deleting the file: {e}")
+messanger = TelegramMessanger("6859309312:AAFo5rGYbvh8cgW4cnH8OW2JNqNckmgqWy8")
+stats = calculate_stats("n.andrievskiy@gmail.com", "last_year", "Відчуття дзеркала світу")
+doc = create_word_stat_document(stats)
+messanger.send_file("output_document.docx", 579467950)
