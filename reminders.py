@@ -65,9 +65,6 @@ def send_first_of_month_reminders():
             except Exception as e:
                 print(e)
 
-def test_job():
-    print("test working")
-
 if __name__ == '__main__':
     print("REMINDERS --- WORKING")
     # # Schedule Monday reminders every Monday at 10 AM Kyiv time
@@ -75,9 +72,6 @@ if __name__ == '__main__':
 
     # Schedule first day of the month reminders at 10 AM Kyiv time
     schedule.every().day.at("10:00").do(send_first_of_month_reminders).tag("first_of_month")
-
-    schedule.every(10).seconds.do(test_job)
-
 
     while True:
         schedule.run_pending()

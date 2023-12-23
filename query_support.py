@@ -106,7 +106,7 @@ def get_indexed_athlete(index):
     data_df.columns = data_df.iloc[0]
     data_df = data_df[1:]   
 
-    all_athletes = data_df["Name"].unique()
+    all_athletes = data_df["Email"].unique()
 
     return all_athletes[index-1]
 
