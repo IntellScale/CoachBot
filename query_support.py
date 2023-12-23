@@ -1,4 +1,5 @@
 import pandas as pd 
+import pytz
 from datetime import datetime, timedelta
 from Google_connect import main, read_data, write_data
 from user_id_extractor import get_chat_id
@@ -99,8 +100,15 @@ def get_indexed_athlete(index):
 
     return all_athletes[index-1]
 
+def add_feedback_to_sheet(username: str, feedback: str):
+    # Get the current date and time in ISO format
+    kyiv_timezone = pytz.timezone("Europe/Kiev")
+    timestamp = datetime.now(kyiv_timezone).isoformat()
+    data = [[timestamp, username, feedback]]
+
+    sheet = main()
+    write_data(sheet, "Feedback", data)
      
-#print(get_report_record('n.andrievskiy@gmail.com', "2023-12-10"))
     
     
 

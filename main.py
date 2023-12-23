@@ -13,6 +13,7 @@ from user_id_extractor import get_chat_id
 from telegram_direct import TelegramMessanger
 from file_writer import create_word_document, delete_document
 from analytics import calculate_stats
+from feedback import Feedback
 
 # Creating an instance of TelegramMessanger
 messanger = TelegramMessanger("6859309312:AAFo5rGYbvh8cgW4cnH8OW2JNqNckmgqWy8")
@@ -104,7 +105,19 @@ def get_athlete(index: int):
     athlete = get_indexed_athlete(index)
     return athlete
 
+# An api request to add a review from a user to a google sheet
+@app.post("/feedback-add/")
+def add_review(feedback: Feedback):
+    try:
+        # Add the review to the Google Sheet
+    
+        add_feedback_to_sheet(username=feedback.username, feedback=feedback.feedback)
 
+
+        return {"feedback-add successful": True}
+    except:
+        return {"feedback-add successful": False}
+    
 
 
 
