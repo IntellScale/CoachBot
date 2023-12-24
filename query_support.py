@@ -65,7 +65,7 @@ def get_report_record(user_email, query_date):
     
     data_df.columns = data_df.iloc[0]
     data_df = data_df[1:]   
-    
+
 
     users_submitions = data_df[data_df['Email Address'] == user_email]
     for i in users_submitions.values:
