@@ -68,10 +68,10 @@ def send_first_of_month_reminders():
 if __name__ == '__main__':
     print("REMINDERS --- WORKING")
     # # Schedule Monday reminders every Monday at 10 AM Kyiv time
-    schedule.every().monday.at("10:00").do(send_monday_reminders)
+    schedule.every().monday.at("07:00").do(send_monday_reminders)
 
     # Schedule first day of the month reminders at 10 AM Kyiv time
-    schedule.every().day.at("10:00").do(send_first_of_month_reminders).tag("first_of_month")
+    schedule.every().day.at("07:00").do(send_first_of_month_reminders).tag("first_of_month")
 
     while True:
         schedule.run_pending()
