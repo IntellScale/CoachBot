@@ -19,6 +19,8 @@ def main():
     credentials = None
     if os.path.exists("token.json"):
         credentials = Credentials.from_authorized_user_file("token.json", SCOPES)
+        if credentials and credentials.expired and credentials.refresh_token:
+            credentials.refresh(Request())
     
     # Refresh credentials if they have expired
     if not credentials or not credentials.valid:
